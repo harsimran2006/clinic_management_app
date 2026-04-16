@@ -18,9 +18,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         SnackBar(content: Text("Appointment Booked Successfully")),
       );
 
-      print("Patient: ${patientController.text}");
-      print("Clinic: ${clinicController.text}");
-      print("Date: ${dateController.text}");
+      Navigator.pop(context, {
+        "patient": patientController.text.trim(),
+        "clinic": clinicController.text.trim(),
+        "date": dateController.text.trim(),
+      });
     }
   }
 
@@ -55,7 +57,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter patient name";
                   }
                   return null;
@@ -72,7 +74,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter clinic name";
                   }
                   return null;
@@ -84,6 +86,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               // Date
               TextFormField(
                 controller: dateController,
+                readOnly: true,
                 decoration: InputDecoration(
                   labelText: "Appointment Date",
                   border: OutlineInputBorder(),
@@ -104,7 +107,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                   }
                 },
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Select a date";
                   }
                   return null;
@@ -126,5 +129,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    patientController.dispose();
+    clinicController.dispose();
+    dateController.dispose();
+    super.dispose();
   }
 }

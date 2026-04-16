@@ -16,9 +16,9 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
     if (_formKey.currentState!.validate()) {
       // Create clinic data
       final clinicData = {
-        "name": nameController.text,
-        "location": locationController.text,
-        "phone": phoneController.text,
+        "name": nameController.text.trim(),
+        "location": locationController.text.trim(),
+        "phone": phoneController.text.trim(),
       };
 
       // Show message
@@ -58,7 +58,7 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter clinic name";
                   }
                   return null;
@@ -74,7 +74,7 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter location";
                   }
                   return null;
@@ -91,8 +91,11 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter phone number";
+                  }
+                  if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                    return "Enter a valid 10-digit number";
                   }
                   return null;
                 },
@@ -113,5 +116,13 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    locationController.dispose();
+    phoneController.dispose();
+    super.dispose();
   }
 }
