@@ -69,10 +69,11 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter age";
                   }
-                  if (int.tryParse(value) == null) {
+                  final age = int.tryParse(value);
+                  if (age == null || age <= 0) {
                     return "Enter a valid number";
                   }
                   return null;
@@ -89,7 +90,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 ),
                 keyboardType: TextInputType.phone,
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
+                  if (value == null || value.trim().isEmpty) {
                     return "Enter phone number";
                   }
                   if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
@@ -114,5 +115,13 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    ageController.dispose();
+    phoneController.dispose();
+    super.dispose();
   }
 }
