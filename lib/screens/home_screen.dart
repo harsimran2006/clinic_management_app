@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'add_clinic_screen.dart';
 import 'clinic_list_screen.dart';
+import 'appointment_screen.dart';
+import 'add_patient_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -60,6 +64,30 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 );
               },
+            ),
+
+            SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AppointmentScreen()),
+                );
+              },
+              child: Text("Book Appointment"),
+            ),
+
+            SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddPatientScreen()),
+                );
+              },
+              child: Text("Add Patient"),
             ),
           ],
         ),

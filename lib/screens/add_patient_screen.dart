@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AddPatientScreen extends StatefulWidget {
+  const AddPatientScreen({super.key});
+
   @override
   _AddPatientScreenState createState() => _AddPatientScreenState();
 }

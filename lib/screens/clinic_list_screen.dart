@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ClinicListScreen extends StatelessWidget {
   final List<Map<String, String>> clinics;
 
-  ClinicListScreen({required this.clinics});
+  const ClinicListScreen({super.key, required this.clinics});
 
   @override
   Widget build(BuildContext context) {
