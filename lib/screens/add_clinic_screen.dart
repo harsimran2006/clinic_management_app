@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../database/database_helper.dart';
 
 class AddClinicScreen extends StatefulWidget {
   const AddClinicScreen({super.key});
@@ -14,24 +15,28 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
   TextEditingController locationController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
-  void saveClinic() {
-    if (_formKey.currentState!.validate()) {
-      // Create clinic data
-      final clinicData = {
-        "name": nameController.text.trim(),
-        "location": locationController.text.trim(),
-        "phone": phoneController.text.trim(),
-      };
+  void saveClinic() async {
+  if (_formKey.currentState!.validate()) {
+    final clinicData = {
+      "name": nameController.text.trim(),
+      "address": locationController.text.trim(), // mapped to DB column
+      "phone": phoneController.text.trim(),
+      "description": "" // optional field
+    };
 
-      // Show message
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Clinic Saved Successfully")));
+    // Insert into database
+    await DatabaseHelper.instance.insertClinic(clinicData);
 
-      // Go back and send data
-      Navigator.pop(context, clinicData);
-    }
+    // Show success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Clinic Saved Successfully")),
+    );
+
+    // Go back
+    Navigator.pop(context);
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

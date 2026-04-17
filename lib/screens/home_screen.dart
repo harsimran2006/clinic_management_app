@@ -12,7 +12,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Map<String, String>> clinics = [];
 
   @override
   Widget build(BuildContext context) {
@@ -39,16 +38,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               child: Text("Add Clinic"),
               onPressed: () async {
-                final result = await Navigator.push(
+                await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddClinicScreen()),
                 );
 
-                if (result != null) {
-                  setState(() {
-                    clinics.add(result);
-                  });
-                }
+                // No need to store clinics locally anymore
+                setState(() {});
               },
             ),
 
@@ -60,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ClinicListScreen(clinics: clinics),
+                    builder: (context) => ClinicListScreen(),
                   ),
                 );
               },
