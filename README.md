@@ -1,100 +1,164 @@
-# clinic_management_app
-project 
-📱 FINAL PROJECT TEAM GUIDE (5-DAY PLAN)
-🎯 Project Goal
-We need to build a Flutter mobile app that:
-Runs without errors
-Has proper UI and navigation
-Uses database (sqflite)
-Includes forms, lists, and some native features
-👉 Our goal is NOT perfection
-👉 Our goal is to meet rubric and get high marks
-🧩 PROJECT IDEA
-We are building a:
-🏥 Clinic Management App
-Main Features:
-Add and view clinics
-Book appointments
-Store patient data
-Show data in lists
-Use camera + location (basic)
-🏗️ APP STRUCTURE (SIMPLE)
-📱 Screens (7+)
-Splash Screen
-Login Screen
-Home Screen
-Clinic List
-Add Clinic
-Appointment Screen
-Profile Screen
-📝 Forms (3 required)
-Add Clinic Form
-Book Appointment Form
-Add Patient Form
-👉 All forms must have validation (no empty fields)
-🗄️ Database (VERY IMPORTANT)
-We will use sqflite
-Tables:
-Clinics
-Patients
-Appointments
-👉 Each table must support:
-Insert
-View
-Update
-Delete
-👥 TEAM WORK DIVISION
-👤 MEMBER 1 – UI DESIGN + SCREENS
-Responsibilities:
-Create all screens
-Design layout (simple & clean)
-Add buttons and UI elements
-Output:
-All pages visible
-Good first impression
-👤 MEMBER 2 – FORMS + VALIDATION
-Responsibilities:
-Create 3 forms:
-Add Clinic
-Appointment
-Patient
-Add validation:
-Required fields
-Basic input checks
-Output:
-Forms working correctly
-No empty submissions
-👤 MEMBER 3 – DATABASE (CORE ROLE)
-Responsibilities:
-Setup sqflite
-Create 3 tables:
-clinics
-patients
-appointments
-Add CRUD:
-Insert
-Fetch
-Update
-Delete
-Output:
-Data saved and retrieved
-App becomes functional
-👤 MEMBER 4 – FEATURES (NATIVE + ADVANCED)
-Responsibilities:
-Camera (capture image)
-Location (get current GPS)
-Map (show location)
-Output:
-At least 2–3 features working
-🤝 ALL MEMBERS
-Testing
-Fix bugs
-Help connect features
-Prepare for presentation
-🔄 APP FLOW (HOW IT WORKS)
-Open app → Splash → Login → Home
-User clicks “Add Clinic”
-Fill form → Save
-Data stored in database
-Show in list screen
-👉 This is our main working flow
+# 📱 Clinic Management App
+
+## 🎯 Project Goal
+
+This project is a Flutter mobile application developed as a final group project.
+
+The app is designed to:
+
+* Run without errors
+* Provide proper UI and navigation
+* Use a local database (sqflite)
+* Include forms, lists, and native features
+
+> Our goal is **not perfection**, but to meet the rubric requirements and deliver a functional application.
+
+---
+
+## 🧩 Project Idea
+
+🏥 **Clinic Management App**
+
+### Main Features
+
+* Add and view clinics
+* Book appointments
+* Store patient data
+* Display data in lists
+* Use basic native features (camera, location)
+
+---
+
+## 🏗️ App Structure
+
+### 📱 Screens
+
+* Splash Screen
+* Login Screen
+* Home Screen
+* Clinic List Screen
+* Add Clinic Screen
+* Appointment Screen
+* Profile Screen
+
+---
+
+## 📝 Forms
+
+* Add Clinic Form
+* Book Appointment Form
+* Add Patient Form
+
+✔ All forms include validation:
+
+* Required fields
+* Basic input validation
+
+---
+
+## 🗄️ Database (sqflite)
+
+### Tables
+
+* Clinics
+* Patients
+* Appointments
+
+Each table supports full CRUD operations:
+
+* Insert
+* Select (single & all)
+* Update
+* Delete
+
+---
+
+## 👥 Team Work Division
+
+### 👤 Member 1 – UI Design & Screens - Harsimranpreet Kaur
+
+* Create all screens
+* Design layout (clean and simple)
+* Add UI elements and navigation
+
+**Output:**
+
+* All pages implemented
+* Good visual structure
+
+---
+
+### 👤 Member 2 – Forms & Validation - Lewis Moura
+
+* Create forms:
+
+  * Add Clinic
+  * Appointment
+  * Patient
+* Implement validation:
+
+  * Required fields
+  * Input checks
+
+**Output:**
+
+* Fully functional forms
+* No invalid submissions
+
+---
+
+### 👤 Member 3 – Database (Core) - Sainabou Samba Camara
+
+* Setup sqflite database
+* Create tables:
+
+  * clinics
+  * patients
+  * appointments
+* Implement CRUD operations
+
+**Output:**
+
+* Data stored and retrieved correctly
+* Functional backend
+
+---
+
+### 👤 Member 4 – Native Features - Harsimrandeep Kaur
+
+* Camera integration
+* Location services
+* Map display
+
+**Output:**
+
+* At least 2–3 native features working
+
+---
+
+### 🤝 All Members
+
+* Testing
+* Bug fixing
+* Feature integration
+* Demo preparation
+
+---
+
+## 🔄 App Flow
+
+1. Open app → Splash Screen → Login → Home
+2. User selects **Add Clinic**
+3. Fill out form → Save
+4. Data stored in database
+5. Data displayed in list screen
+
+---
+
+## 🚀 Final Notes
+
+* Focus was placed on functionality and meeting rubric requirements
+* The application is stable and demonstrates key mobile development concepts
+* All core features are implemented and testable
+
+---
