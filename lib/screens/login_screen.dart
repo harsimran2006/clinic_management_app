@@ -11,17 +11,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>(); // ✅ MISSING BEFORE
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
+
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      _showMessage("Please enter email and password");
-      return;
-    }
 
     final user = await DatabaseHelper.instance.login(email, password);
 
@@ -47,41 +46,77 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(title: const Text("Login")),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                hintText: "Enter your email",
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: "Email",
+                  hintText: "Enter your email",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Enter email";
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return "Enter valid email";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                hintText: "Enter your password",
+
+              const SizedBox(height: 20),
+
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Password",
+                  hintText: "Enter your password",
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return "Enter password";
+                  }
+                  if (value.length < 4) {
+                    return "Password too short";
+                  }
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(onPressed: _login, child: const Text("Login")),
-            const SizedBox(height: 15),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const RegisterScreen(),
-                  ),
-                );
-              },
-              child: const Text("Don't have an account? Register"),
-            ),
-          ],
+
+              const SizedBox(height: 30),
+
+              ElevatedButton(onPressed: _login, child: const Text("Login")),
+
+              const SizedBox(height: 15),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
+                  );
+                },
+                child: const Text("Don't have an account? Register"),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }
