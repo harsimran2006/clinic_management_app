@@ -25,9 +25,11 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
       'description': description.text.trim(),
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Clinic added")),
-    );
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Clinic added")));
 
     Navigator.pop(context);
   }
@@ -35,7 +37,10 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Clinic"), backgroundColor: Colors.teal),
+      appBar: AppBar(
+        title: const Text("Add Clinic"),
+        backgroundColor: Colors.teal,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(

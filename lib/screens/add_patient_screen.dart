@@ -20,15 +20,17 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
 
     await DatabaseHelper.instance.insertPatient({
       'name': name.text.trim(),
-      'age': int.parse(age.text.trim()),
+      'age': int.tryParse(age.text.trim()) ?? 0,
       'phone': phone.text.trim(),
       'email': email.text.trim(),
       'clinic_id': null,
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Patient added")),
-    );
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Patient added")));
 
     Navigator.pop(context);
   }
@@ -36,7 +38,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Add Patient"), backgroundColor: Colors.teal),
+      appBar: AppBar(
+        title: const Text("Add Patient"),
+        backgroundColor: Colors.teal,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -44,9 +49,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           child: ListView(
             children: [
               _field(name, "Name"),
-              _field(age, "Age"),
-              _field(phone, "Phone"),
-              _field(email, "Email"),
+              _field(age, "Age", isNumber: true),
+              _field(phone, "Phone", isPhone: true),
+              _field(email, "Email", isEmail: true),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: savePatient,
@@ -60,17 +65,61 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
     );
   }
 
-  Widget _field(TextEditingController c, String label) {
+  Widget _field(
+    TextEditingController c,
+    String label, {
+    bool isNumber = false,
+    bool isPhone = false,
+    bool isEmail = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
         controller: c,
+        keyboardType: isNumber
+            ? TextInputType.number
+            : isPhone
+            ? TextInputType.phone
+            : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        validator: (v) => v!.isEmpty ? "Enter $label" : null,
+        validator: (v) {
+          if (v == null || v.trim().isEmpty) {
+            return "Enter $label";
+          }
+
+          if (isNumber) {
+            final num = int.tryParse(v);
+            if (num == null) return "Enter a valid number";
+            if (num <= 0 || num > 120) return "Enter valid age";
+          }
+
+          if (isPhone) {
+            if (!RegExp(r'^[0-9]{10}$').hasMatch(v)) {
+              return "Enter valid 10-digit number";
+            }
+          }
+
+          if (isEmail) {
+            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
+              return "Enter valid email";
+            }
+          }
+
+          return null;
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    age.dispose();
+    phone.dispose();
+    email.dispose();
+    super.dispose();
   }
 }

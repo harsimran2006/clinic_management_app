@@ -54,8 +54,20 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
 
   Future<void> saveAppointment() async {
     if (!_formKey.currentState!.validate()) return;
-    if (selectedPatient == null || selectedClinic == null) return;
-    if (selectedDate == null || selectedTime == null) return;
+
+    if (selectedPatient == null || selectedClinic == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select patient and clinic")),
+      );
+      return;
+    }
+
+    if (selectedDate == null || selectedTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select date and time")),
+      );
+      return;
+    }
 
     final dateStr =
         "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}";
@@ -69,6 +81,12 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
       'time': timeStr,
       'reason': reasonController.text.trim(),
     });
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text("Appointment added")));
 
     Navigator.pop(context);
   }
@@ -87,7 +105,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
           child: ListView(
             children: [
               DropdownButtonFormField<int>(
-                value: selectedPatient,
+                initialValue: selectedPatient,
                 decoration: const InputDecoration(
                   labelText: "Select Patient",
                   border: OutlineInputBorder(),
@@ -99,13 +117,12 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                   );
                 }).toList(),
                 onChanged: (v) => setState(() => selectedPatient = v),
-                validator: (v) =>
-                    v == null ? "Please select a patient" : null,
+                validator: (v) => v == null ? "Please select a patient" : null,
               ),
               const SizedBox(height: 15),
 
               DropdownButtonFormField<int>(
-                value: selectedClinic,
+                initialValue: selectedClinic,
                 decoration: const InputDecoration(
                   labelText: "Select Clinic",
                   border: OutlineInputBorder(),
@@ -117,8 +134,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                   );
                 }).toList(),
                 onChanged: (v) => setState(() => selectedClinic = v),
-                validator: (v) =>
-                    v == null ? "Please select a clinic" : null,
+                validator: (v) => v == null ? "Please select a clinic" : null,
               ),
               const SizedBox(height: 15),
 

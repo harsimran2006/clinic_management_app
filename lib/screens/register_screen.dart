@@ -26,6 +26,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     _showMessage("Account created! Please login.");
 
+    if (!mounted) return;
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -33,9 +35,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _showMessage(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override

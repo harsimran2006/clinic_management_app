@@ -25,6 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final user = await DatabaseHelper.instance.login(email, password);
 
+    if (!mounted) return;
+
     if (user != null) {
       Navigator.pushReplacement(
         context,
@@ -36,9 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showMessage(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   @override
@@ -66,16 +66,15 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text("Login"),
-            ),
+            ElevatedButton(onPressed: _login, child: const Text("Login")),
             const SizedBox(height: 15),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterScreen(),
+                  ),
                 );
               },
               child: const Text("Don't have an account? Register"),
