@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
+import 'add_clinic_screen.dart';
+import 'clinic_details_screen.dart';
 
 class ClinicListScreen extends StatefulWidget {
   const ClinicListScreen({super.key});
 
   @override
-  _ClinicListScreenState createState() => _ClinicListScreenState();
+  State<ClinicListScreen> createState() => _ClinicListScreenState();
 }
 
 class _ClinicListScreenState extends State<ClinicListScreen> {
@@ -14,10 +16,10 @@ class _ClinicListScreenState extends State<ClinicListScreen> {
   @override
   void initState() {
     super.initState();
-    loadClinics();
+    _loadClinics();
   }
 
-  Future<void> loadClinics() async {
+  Future<void> _loadClinics() async {
     final data = await DatabaseHelper.instance.getClinics();
     setState(() {
       clinics = data;
@@ -27,37 +29,37 @@ class _ClinicListScreenState extends State<ClinicListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Clinic List"),
-        backgroundColor: Colors.teal,
-      ),
-
-      body: clinics.isEmpty
-          ? Center(child: Text("No Clinics Added"))
-          : ListView.builder(
-              itemCount: clinics.length,
-              itemBuilder: (context, index) {
-                final clinic = clinics[index];
-
-                return Card(
-                  margin: EdgeInsets.all(10),
-
-                  child: ListTile(
-                    leading: Icon(Icons.local_hospital, color: Colors.teal),
-
-                    title: Text(clinic["name"]),
-
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("Location: ${clinic["address"]}"),
-                        Text("Phone: ${clinic["phone"]}"),
-                      ],
-                    ),
+      appBar: AppBar(title: const Text("Clinics")),
+      body: ListView.builder(
+        itemCount: clinics.length,
+        itemBuilder: (context, index) {
+          final clinic = clinics[index];
+          return Card(
+            child: ListTile(
+              title: Text(clinic['name']),
+              subtitle: Text(clinic['address']),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClinicDetailsScreen(clinic: clinic),
                   ),
                 );
               },
             ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddClinicScreen()),
+          );
+          _loadClinics();
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

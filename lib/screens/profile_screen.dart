@@ -5,7 +5,7 @@ class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -32,15 +32,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
+        title: const Text("Profile"),
         backgroundColor: Colors.teal,
       ),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
+            const CircleAvatar(
               radius: 50,
               backgroundColor: Colors.teal,
               child: Icon(
@@ -50,40 +49,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            Text(
+            const Text(
               "User Name",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
-            Text(
+            const Text(
               "user@email.com",
-              style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
 
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
 
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 30),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               elevation: 3,
               child: ListTile(
-                leading: Icon(Icons.local_hospital, color: Colors.teal),
-                title: Text("Total Clinics"),
+                leading: const Icon(Icons.local_hospital, color: Colors.teal),
+                title: const Text("Total Clinics"),
                 trailing: Text(totalClinics.toString()),
               ),
             ),
 
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
 
             Card(
-              margin: EdgeInsets.symmetric(horizontal: 30),
+              margin: const EdgeInsets.symmetric(horizontal: 30),
               elevation: 3,
               child: ListTile(
-                leading: Icon(Icons.calendar_today, color: Colors.teal),
-                title: Text("Appointments"),
+                leading: const Icon(Icons.calendar_today, color: Colors.teal),
+                title: const Text("Appointments"),
                 trailing: Text(totalAppointments.toString()),
               ),
             ),

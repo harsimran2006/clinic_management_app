@@ -5,118 +5,52 @@ class AddClinicScreen extends StatefulWidget {
   const AddClinicScreen({super.key});
 
   @override
-  _AddClinicScreenState createState() => _AddClinicScreenState();
+  State<AddClinicScreen> createState() => _AddClinicScreenState();
 }
 
 class _AddClinicScreenState extends State<AddClinicScreen> {
   final _formKey = GlobalKey<FormState>();
+  final name = TextEditingController();
+  final address = TextEditingController();
+  final phone = TextEditingController();
+  final description = TextEditingController();
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  Future<void> saveClinic() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  void saveClinic() async {
-  if (_formKey.currentState!.validate()) {
-    final clinicData = {
-      "name": nameController.text.trim(),
-      "address": locationController.text.trim(), // mapped to DB column
-      "phone": phoneController.text.trim(),
-      "description": "" // optional field
-    };
+    await DatabaseHelper.instance.insertClinic({
+      'name': name.text.trim(),
+      'address': address.text.trim(),
+      'phone': phone.text.trim(),
+      'description': description.text.trim(),
+    });
 
-    // Insert into database
-    await DatabaseHelper.instance.insertClinic(clinicData);
-
-    // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Clinic Saved Successfully")),
+      const SnackBar(content: Text("Clinic added")),
     );
 
-    // Go back
     Navigator.pop(context);
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Clinic"), backgroundColor: Colors.teal),
-
+      appBar: AppBar(title: const Text("Add Clinic"), backgroundColor: Colors.teal),
       body: Padding(
-        padding: EdgeInsets.all(16),
-
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
-
-          child: Column(
+          child: ListView(
             children: [
-              Text(
-                "Enter Clinic Details",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-
-              SizedBox(height: 20),
-
-              TextFormField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: "Clinic Name",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Enter clinic name";
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: 15),
-
-              TextFormField(
-                controller: locationController,
-                decoration: InputDecoration(
-                  labelText: "Location",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Enter location";
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: 15),
-
-              TextFormField(
-                controller: phoneController,
-                decoration: InputDecoration(
-                  labelText: "Phone Number",
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Enter phone number";
-                  }
-                  if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
-                    return "Enter a valid 10-digit number";
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: 25),
-
+              _field(name, "Clinic Name"),
+              _field(address, "Address"),
+              _field(phone, "Phone"),
+              _field(description, "Description", maxLines: 3),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: saveClinic,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                ),
-                child: Text("Save Clinic", style: TextStyle(fontSize: 16)),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                child: const Text("Save"),
               ),
             ],
           ),
@@ -125,11 +59,18 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    nameController.dispose();
-    locationController.dispose();
-    phoneController.dispose();
-    super.dispose();
+  Widget _field(TextEditingController c, String label, {int maxLines = 1}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: TextFormField(
+        controller: c,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        validator: (v) => v!.isEmpty ? "Enter $label" : null,
+      ),
+    );
   }
 }

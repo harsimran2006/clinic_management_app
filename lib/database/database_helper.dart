@@ -17,14 +17,11 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _createDB,
-    );
+    return await openDatabase(path, version: 1, onCreate: _createDB);
   }
 
   Future _createDB(Database db, int version) async {
+    // USERS TABLE
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,6 +31,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // CLINICS TABLE
     await db.execute('''
       CREATE TABLE clinics (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +42,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // PATIENTS TABLE
     await db.execute('''
       CREATE TABLE patients (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,6 +55,7 @@ class DatabaseHelper {
       )
     ''');
 
+    // APPOINTMENTS TABLE
     await db.execute('''
       CREATE TABLE appointments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -70,11 +70,14 @@ class DatabaseHelper {
     ''');
   }
 
-  // ---------------- USERS CRUD ----------------
+  // ---------------- USERS ----------------
 
-  Future<int> insertUser(Map<String, dynamic> row) async {
+  Future<int> registerUser(String username, String password) async {
     final db = await instance.database;
-    return await db.insert('users', row);
+    return await db.insert('users', {
+      'username': username,
+      'password': password,
+    });
   }
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
@@ -87,7 +90,7 @@ class DatabaseHelper {
     return result.isNotEmpty ? result.first : null;
   }
 
-  // ---------------- CLINICS CRUD ----------------
+  // ---------------- CLINICS ----------------
 
   Future<int> insertClinic(Map<String, dynamic> row) async {
     final db = await instance.database;
@@ -99,7 +102,7 @@ class DatabaseHelper {
     return await db.query('clinics');
   }
 
-  // ---------------- PATIENTS CRUD ----------------
+  // ---------------- PATIENTS ----------------
 
   Future<int> insertPatient(Map<String, dynamic> row) async {
     final db = await instance.database;
@@ -111,7 +114,7 @@ class DatabaseHelper {
     return await db.query('patients');
   }
 
-  // ---------------- APPOINTMENTS CRUD ----------------
+  // ---------------- APPOINTMENTS ----------------
 
   Future<int> insertAppointment(Map<String, dynamic> row) async {
     final db = await instance.database;
@@ -123,10 +126,30 @@ class DatabaseHelper {
     return await db.query('appointments');
   }
 
-  // ---------------- CLOSE DB ----------------
+  // ---------------- CLOSE ----------------
 
   Future close() async {
     final db = await instance.database;
     db.close();
+  }
+
+  Future<List<Map<String, dynamic>>> getAppointmentsWithNames() async {
+    final db = await database;
+
+    final result = await db.rawQuery('''
+    SELECT 
+      appointments.id,
+      appointments.date,
+      appointments.time,
+      appointments.reason,
+      patients.name AS patient_name,
+      clinics.name AS clinic_name
+    FROM appointments
+    INNER JOIN patients ON appointments.patientId = patients.id
+    INNER JOIN clinics ON appointments.clinicId = clinics.id
+    ORDER BY appointments.id DESC
+  ''');
+
+    return result;
   }
 }

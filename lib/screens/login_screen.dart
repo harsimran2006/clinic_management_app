@@ -1,124 +1,86 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 import 'home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  Future<void> _login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
 
-  bool isLoading = false;
-
-  void loginUser() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        isLoading = true;
-      });
-
-      final email = emailController.text.trim();
-      final password = passwordController.text.trim();
-
-      final user = await DatabaseHelper.instance.login(email, password);
-
-      setState(() {
-        isLoading = false;
-      });
-
-      if (user != null) {
-        // Login success
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login Successful")),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
-      } else {
-        // Login failed
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Invalid email or password")),
-        );
-      }
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage("Please enter email and password");
+      return;
     }
+
+    final user = await DatabaseHelper.instance.login(email, password);
+
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      _showMessage("Invalid email or password");
+    }
+  }
+
+  void _showMessage(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-
-      appBar: AppBar(
-        title: Text("Login"),
-        backgroundColor: Colors.teal,
-      ),
-
+      appBar: AppBar(title: const Text("Login")),
       body: Padding(
-        padding: EdgeInsets.all(16),
-
-        child: Form(
-          key: _formKey,
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Welcome Back",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: "Email",
+                hintText: "Enter your email",
               ),
-
-              SizedBox(height: 30),
-
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty
-                        ? "Enter email"
-                        : null,
+            ),
+            const SizedBox(height: 20),
+            TextField(
+              controller: passwordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: "Password",
+                hintText: "Enter your password",
               ),
-
-              SizedBox(height: 15),
-
-              TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value == null || value.trim().isEmpty
-                        ? "Enter password"
-                        : null,
-              ),
-
-              SizedBox(height: 25),
-
-              isLoading
-                  ? CircularProgressIndicator(color: Colors.teal)
-                  : ElevatedButton(
-                      onPressed: loginUser,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 40, vertical: 15),
-                      ),
-                      child: Text("Login", style: TextStyle(fontSize: 16)),
-                    ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: _login,
+              child: const Text("Login"),
+            ),
+            const SizedBox(height: 15),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                );
+              },
+              child: const Text("Don't have an account? Register"),
+            ),
+          ],
         ),
       ),
     );
