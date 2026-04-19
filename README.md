@@ -1,5 +1,5 @@
 # Clinic Management App
-A mobiel application built using flutter and SQLite for managing clinics, patients and appointments.
+A mobile application built using flutter and SQLite for managing clinics, patients and appointments.
 
 This project was completed as part of a group assigment for PROG2436 - Conestoga College
 
