@@ -3,7 +3,7 @@
 //Sainabou Samba Camara
 //Lewis Moura
 //Kaur Harsimrandeep
-//Kaur, Harsimranpreet
+//Kaur Harsimranpreet
 
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
