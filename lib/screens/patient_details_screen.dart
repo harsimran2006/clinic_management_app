@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PatientDetailsScreen extends StatelessWidget {
+  //Patient data passed from the list screen
   final Map<String, dynamic> patient;
 
   const PatientDetailsScreen({super.key, required this.patient});

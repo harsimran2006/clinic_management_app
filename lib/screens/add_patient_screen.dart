@@ -9,15 +9,17 @@ class AddPatientScreen extends StatefulWidget {
 }
 
 class _AddPatientScreenState extends State<AddPatientScreen> {
+  //Controllers for patient input field
   final _formKey = GlobalKey<FormState>();
   final name = TextEditingController();
   final age = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
+ //Save patient into database
+ Future<void> savePatient() async {
+  if (!_formKey.currentState!.validate()) return;
 
-  Future<void> savePatient() async {
-    if (!_formKey.currentState!.validate()) return;
-
+  try {
     await DatabaseHelper.instance.insertPatient({
       'name': name.text.trim(),
       'age': int.tryParse(age.text.trim()) ?? 0,
@@ -28,12 +30,28 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("Patient added")));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Patient added successfully")),
+    );
 
     Navigator.pop(context);
+
+  } catch (e) {
+    // Handle duplicate patient
+    if (e.toString().contains("UNIQUE constraint failed")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Patient already exists"),
+        ),
+      );
+    } else {
+      // Any other unexpected error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
   }
+}
 
   @override
   Widget build(BuildContext context) {

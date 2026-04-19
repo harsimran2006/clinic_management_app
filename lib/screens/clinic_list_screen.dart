@@ -11,6 +11,7 @@ class ClinicListScreen extends StatefulWidget {
 }
 
 class _ClinicListScreenState extends State<ClinicListScreen> {
+  //List to store all clinics from the database
   List<Map<String, dynamic>> clinics = [];
 
   @override
@@ -19,6 +20,7 @@ class _ClinicListScreenState extends State<ClinicListScreen> {
     _loadClinics();
   }
 
+  //Fetch clinics from the database
   Future<void> _loadClinics() async {
     final data = await DatabaseHelper.instance.getClinics();
     setState(() {
@@ -38,6 +40,7 @@ class _ClinicListScreenState extends State<ClinicListScreen> {
             child: ListTile(
               title: Text(clinic['name']),
               subtitle: Text(clinic['address']),
+              //Open details screen when tapped
               onTap: () {
                 Navigator.push(
                   context,
@@ -50,6 +53,8 @@ class _ClinicListScreenState extends State<ClinicListScreen> {
           );
         },
       ),
+
+      //Button to add a new clinic
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class AppointmentDetailsScreen extends StatelessWidget {
+  //Appointment data passed from the list screen
   final Map<String, dynamic> appointment;
 
-  const AppointmentDetailsScreen({super.key, required this.appointment});
+  const AppointmentDetailsScreen({
+    super.key,
+    required this.appointment,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,44 +21,57 @@ class AppointmentDetailsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Appointment Information",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Text(
+              "${appointment['patient_name']} — ${appointment['clinic_name']}",
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 20),
 
+          //Patient Section
             const Text(
-              "Patient ID:",
+              "Patient:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text(
-              "${appointment['patient_Id']}",
+              appointment['patient_name'] ?? "Unknown",
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
 
+            //Clini section
             const Text(
-              "Clinic ID:",
+              "Clinic:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text(
-              "${appointment['clinic_Id']}",
+              appointment['clinic_name'] ?? "Unknown",
               style: const TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
 
+           //Date section
             const Text(
               "Date:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(appointment['date'], style: const TextStyle(fontSize: 16)),
+            Text(
+              appointment['date'],
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 20),
 
+            //Time section
             const Text(
               "Time:",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Text(appointment['time'], style: const TextStyle(fontSize: 16)),
+            Text(
+              appointment['time'],
+              style: const TextStyle(fontSize: 16),
+            ),
             const SizedBox(height: 20),
 
             const Text(

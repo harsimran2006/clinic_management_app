@@ -1,3 +1,10 @@
+//Clinic Management App
+//Team Members:
+//Sainabou Samba Camara
+//Lewis Moura
+//Kaur Harsimrandeep
+//Kaur, Harsimranpreet
+
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 

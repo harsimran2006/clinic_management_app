@@ -11,56 +11,77 @@ class AppointmentScreen extends StatefulWidget {
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
+  //List to store all appointments with patient and clinic names
   List<Map<String, dynamic>> appointments = [];
 
   @override
   void initState() {
     super.initState();
-    _loadAppointments();
+    loadAppointments(); //load appointments when screen open
   }
 
-  Future<void> _loadAppointments() async {
-    final data = await DatabaseHelper.instance.getAppointments();
-    setState(() {
-      appointments = data;
-    });
+  //Fetch appointments from database
+  Future<void> loadAppointments() async {
+    appointments = await DatabaseHelper.instance.getAppointmentsWithNames();
+    setState(() {});
+  }
+
+  //Refresh list after adding a new appointment
+  Future<void> refreshAfterAdd() async {
+    await loadAppointments();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Appointments")),
-      body: ListView.builder(
-        itemCount: appointments.length,
-        itemBuilder: (context, index) {
-          final a = appointments[index];
-          return Card(
-            child: ListTile(
-              title: Text("Appointment ${a['id']}"),
-              subtitle: Text("${a['date']} at ${a['time']}"),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AppointmentDetailsScreen(
-                      appointment: a,
+      appBar: AppBar(
+        title: const Text("Appointments"),
+        backgroundColor: Colors.teal,
+      ),
+
+      body: appointments.isEmpty
+          ? const Center(child: Text("No appointments found"))
+          : ListView.builder(
+              itemCount: appointments.length,
+              itemBuilder: (context, index) {
+                final a = appointments[index];
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: ListTile(
+                    title: Text(
+                      "${a['patient_name']} → ${a['clinic_name']}",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    subtitle: Text(
+                      "Date: ${a['date']}   Time: ${a['time']}",
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AppointmentDetailsScreen(
+                            appointment: a,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
             ),
-          );
-        },
-      ),
+
+      //Button to add a new appointment
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.teal,
+        child: const Icon(Icons.add),
         onPressed: () async {
           await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddAppointmentScreen()),
           );
-          _loadAppointments(); // refresh after adding
+          refreshAfterAdd();
         },
-        child: const Icon(Icons.add),
       ),
     );
   }

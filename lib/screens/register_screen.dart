@@ -10,7 +10,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _formKey = GlobalKey<FormState>(); // ✅ Added
+  final _formKey = GlobalKey<FormState>(); 
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -23,7 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     await DatabaseHelper.instance.registerUser(email, password);
 
-    if (!mounted) return; // ✅ Fix async context warning
+    if (!mounted) return; 
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Account created! Please login.")),
@@ -42,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
-          key: _formKey, // ✅ Added
+          key: _formKey, 
           child: Column(
             children: [
               TextFormField(

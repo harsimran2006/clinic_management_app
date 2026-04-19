@@ -11,11 +11,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>(); // ✅ MISSING BEFORE
-
+  final _formKey = GlobalKey<FormState>(); 
+  
+  //Controllers for email and passworf fields
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  //Handle login logic
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -27,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (user != null) {
+      
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),

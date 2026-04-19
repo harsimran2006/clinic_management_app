@@ -11,29 +11,35 @@ class AddAppointmentScreen extends StatefulWidget {
 class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  //List to store patients and clinic from the database
   List<Map<String, dynamic>> patients = [];
   List<Map<String, dynamic>> clinics = [];
 
+  //Selected dropdown values
   int? selectedPatient;
   int? selectedClinic;
-
+ 
+  //Selected date and time
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
-
+  
+  //Controller for the reason text field
   final reasonController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    loadData();
+    loadData(); //load patients and clinics when screen opens
   }
-
+  
+  //Fetch patients and clients from the database
   Future<void> loadData() async {
     patients = await DatabaseHelper.instance.getPatients();
     clinics = await DatabaseHelper.instance.getClinics();
     setState(() {});
   }
-
+ 
+  //Open date picker
   Future<void> pickDate() async {
     final date = await showDatePicker(
       context: context,
@@ -43,7 +49,8 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
     );
     if (date != null) setState(() => selectedDate = date);
   }
-
+  
+  //Open time picker
   Future<void> pickTime() async {
     final time = await showTimePicker(
       context: context,
@@ -52,28 +59,33 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
     if (time != null) setState(() => selectedTime = time);
   }
 
+  //Validate and save appointment to the database
   Future<void> saveAppointment() async {
     if (!_formKey.currentState!.validate()) return;
 
+    //Ensure dropdowns are selected
     if (selectedPatient == null || selectedClinic == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select patient and clinic")),
       );
       return;
     }
-
+    
+    //Ensure date and time are selected
     if (selectedDate == null || selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select date and time")),
       );
       return;
     }
-
+    
+    //Format date and time
     final dateStr =
         "${selectedDate!.year}-${selectedDate!.month}-${selectedDate!.day}";
     final timeStr =
         "${selectedTime!.hour}:${selectedTime!.minute.toString().padLeft(2, '0')}";
 
+    //Insert appointment into database
     await DatabaseHelper.instance.insertAppointment({
       'patient_id': selectedPatient,
       'clinic_id': selectedClinic,
@@ -83,12 +95,13 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
     });
 
     if (!mounted) return;
-
+    
+    //Show confirmation message
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(const SnackBar(content: Text("Appointment added")));
 
-    Navigator.pop(context);
+    Navigator.pop(context); 
   }
 
   @override
@@ -104,6 +117,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
           key: _formKey,
           child: ListView(
             children: [
+              //Patient dropdown
               DropdownButtonFormField<int>(
                 initialValue: selectedPatient,
                 decoration: const InputDecoration(
@@ -120,7 +134,8 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                 validator: (v) => v == null ? "Please select a patient" : null,
               ),
               const SizedBox(height: 15),
-
+              
+              //Clinic dropdown button
               DropdownButtonFormField<int>(
                 initialValue: selectedClinic,
                 decoration: const InputDecoration(
@@ -137,7 +152,8 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
                 validator: (v) => v == null ? "Please select a clinic" : null,
               ),
               const SizedBox(height: 15),
-
+              
+              //Date Picker button
               ElevatedButton(
                 onPressed: pickDate,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
@@ -149,6 +165,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
               ),
               const SizedBox(height: 15),
 
+              //Time picker button
               ElevatedButton(
                 onPressed: pickTime,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
@@ -160,6 +177,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
               ),
               const SizedBox(height: 15),
 
+              //Reason text field
               TextFormField(
                 controller: reasonController,
                 maxLines: 2,
@@ -170,6 +188,7 @@ class _AddAppointmentScreenState extends State<AddAppointmentScreen> {
               ),
               const SizedBox(height: 20),
 
+              //Save button
               ElevatedButton(
                 onPressed: saveAppointment,
                 style: ElevatedButton.styleFrom(

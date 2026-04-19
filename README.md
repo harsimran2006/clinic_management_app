@@ -1,164 +1,88 @@
-# 📱 Clinic Management App
+# Clinic Management App
+A mobiel application built using flutter and SQLite for managing clinics, patients and appointments.
 
-## 🎯 Project Goal
+This project was completed as part of a group assigment for PROG2436 - Conestoga College
 
-This project is a Flutter mobile application developed as a final group project.
+## Overview
+The clinic management app allows users to:
+- Register and log in
+- Add and view clinics
+- Book appointments between patients and clinics
+- View appoinment details
+- View locations on Google Maps
+- Navigate through a clean simple UI
+The app uses SQLite for local data storage and follows a modular screen-based architecture
 
-The app is designed to:
+## Technologies used
+- Flutter (Dart)
+- SQLite (sqflite package)
+- Google Maps Flutter
+- Material Design UI
 
-* Run without errors
-* Provide proper UI and navigation
-* Use a local database (sqflite)
-* Include forms, lists, and native features
+## Database Structure
+The app uses four main tables
+- Users - Stores login credentials
+- Clinics - Stores clinic info (name, address, phone, description)
+- Patients - Stores patient info (name, age, phone, email)
+- Appointments - Links patients + clinics with date and time
+All tables use PRIMARY KEY AUTOINCREMENT, and phone numbers in clinics/patients are UNIQUE to prevent duplicate
 
-> Our goal is **not perfection**, but to meet the rubric requirements and deliver a functional application.
+## Key Features
+Authentication
+- Register new users
+- Login with validation
+- Secure navigation using push Replacement
 
----
+Clinic Management
+- Add new clinics
+- View clinic details
+- View clinic location on google maps
 
-## 🧩 Project Idea
+Patient Management
+- Add aptients
+- View patient details
+- Validation for age. Phone and email
 
-🏥 **Clinic Management App**
+Appointment Booking
+- Select Patient
+- Select clinic
+- Pick date
+- Add reason
+- View appointment details
+- JOIN query to show patient + clinic names
 
-### Main Features
+## Group Member Contributions
+Member 1 (Harsimranpreet Kaur) - UI & Navigation
+- Built Homescreen and navigation structure
+- Created Login + Register screens
+- Designed overall app layout and theme
 
-* Add and view clinics
-* Book appointments
-* Store patient data
-* Display data in lists
-* Use basic native features (camera, location)
+Member 2 (Lewis Moura) - Forms and Validation
+- Add clinic
+- Appointment
+- Patient
+- Implement validation
 
----
+Member 3 (Sainabou Samba Camara) - Database (Core)
+- Setup sqflite
+- Create tables
+- Implement CRUD
 
-## 🏗️ App Structure
+Member 4 (Harsimrandeep Kaur) - Native Features
+- Location services
+- Map display
 
-### 📱 Screens
-
-* Splash Screen
-* Login Screen
-* Home Screen
-* Clinic List Screen
-* Add Clinic Screen
-* Appointment Screen
-* Profile Screen
-
----
-
-## 📝 Forms
-
-* Add Clinic Form
-* Book Appointment Form
-* Add Patient Form
-
-✔ All forms include validation:
-
-* Required fields
-* Basic input validation
-
----
-
-## 🗄️ Database (sqflite)
-
-### Tables
-
-* Clinics
-* Patients
-* Appointments
-
-Each table supports full CRUD operations:
-
-* Insert
-* Select (single & all)
-* Update
-* Delete
-
----
-
-## 👥 Team Work Division
-
-### 👤 Member 1 – UI Design & Screens - Harsimranpreet Kaur
-
-* Create all screens
-* Design layout (clean and simple)
-* Add UI elements and navigation
-
-**Output:**
-
-* All pages implemented
-* Good visual structure
-
----
-
-### 👤 Member 2 – Forms & Validation - Lewis Moura
-
-* Create forms:
-
-  * Add Clinic
-  * Appointment
-  * Patient
-* Implement validation:
-
-  * Required fields
-  * Input checks
-
-**Output:**
-
-* Fully functional forms
-* No invalid submissions
-
----
-
-### 👤 Member 3 – Database (Core) - Sainabou Samba Camara
-
-* Setup sqflite database
-* Create tables:
-
-  * clinics
-  * patients
-  * appointments
-* Implement CRUD operations
-
-**Output:**
-
-* Data stored and retrieved correctly
-* Functional backend
-
----
-
-### 👤 Member 4 – Native Features - Harsimrandeep Kaur
-
-* Camera integration
-* Location services
-* Map display
-
-**Output:**
-
-* At least 2–3 native features working
-
----
-
-### 🤝 All Members
-
-* Testing
-* Bug fixing
-* Feature integration
-* Demo preparation
-
----
-
-## 🔄 App Flow
-
-1. Open app → Splash Screen → Login → Home
-2. User selects **Add Clinic**
-3. Fill out form → Save
-4. Data stored in database
-5. Data displayed in list screen
-
----
-
-## 🚀 Final Notes
-
-* Focus was placed on functionality and meeting rubric requirements
-* The application is stable and demonstrates key mobile development concepts
-* All core features are implemented and testable
-
----
+## Screens Included
+- Login
+- Register
+- Home
+- Clinic List
+- Clinic Details
+- Add Clinic
+- Patient List
+- Patient Details
+- Add Patient
+- Appointment List
+- Appointment Details
+- Add Appointment
+- Map SCreen

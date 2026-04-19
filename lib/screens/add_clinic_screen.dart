@@ -9,15 +9,19 @@ class AddClinicScreen extends StatefulWidget {
 }
 
 class _AddClinicScreenState extends State<AddClinicScreen> {
+  //Controllers for clinic input
   final _formKey = GlobalKey<FormState>();
   final name = TextEditingController();
   final address = TextEditingController();
   final phone = TextEditingController();
   final description = TextEditingController();
 
-  Future<void> saveClinic() async {
-    if (!_formKey.currentState!.validate()) return;
+ //Save clinic to the database
+ Future<void> saveClinic() async {
+  if (!_formKey.currentState!.validate()) return;
 
+  try {
+    //Insert clinic into database
     await DatabaseHelper.instance.insertClinic({
       'name': name.text.trim(),
       'address': address.text.trim(),
@@ -26,13 +30,29 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
     });
 
     if (!mounted) return;
-
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("Clinic added")));
+    //succes message
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Clinic added successfully")),
+    );
 
     Navigator.pop(context);
+
+  } catch (e) {
+    // Handle duplicate clinic
+    if (e.toString().contains("UNIQUE constraint failed")) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Clinic already exists"),
+        ),
+      );
+    } else {
+      // Any other unexpected error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    }
   }
+}
 
   @override
   Widget build(BuildContext context) {

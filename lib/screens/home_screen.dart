@@ -10,19 +10,22 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //App bar title for the homepage
       appBar: AppBar(title: const Text("Home")),
+
+      //Main menu list with navigation buttons
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          _menuButton(context, "Clinics", const ClinicListScreen()),
-          _menuButton(context, "Patients", const PatientListScreen()),
-          _menuButton(context, "Appointments", const AppointmentScreen()),
-          _menuButton(context, "Profile", const ProfileScreen()),
+          _menuButton(context, "Clinics", const ClinicListScreen()), //Takes you to the clinic list screen
+          _menuButton(context, "Patients", const PatientListScreen()), //Takes you to the Patient list screen
+          _menuButton(context, "Appointments", const AppointmentScreen()),//Takes you to the apppointment screen
+          _menuButton(context, "Profile", const ProfileScreen()),//Takes you to the profile screen
         ],
       ),
     );
   }
-
+  //Reuasable button widget for each menu option 
   Widget _menuButton(BuildContext context, String title, Widget page) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
@@ -30,12 +33,16 @@ class HomeScreen extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 18),
         ),
+
+        //Pushes the selected page onto the navigation stack
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => page),
           );
         },
+
+        //Button label
         child: Text(title, style: const TextStyle(fontSize: 18)),
       ),
     );
