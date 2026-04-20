@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-const API_KEY = "i4yL2XdZNYi0l2WGM6hj";
+const apiKey = "i4yL2XdZNYi0l2WGM6hj";
 
 class MapPage extends StatelessWidget {
   final double latitude;
@@ -28,7 +28,7 @@ class MapPage extends StatelessWidget {
         children: [
           TileLayer(
             urlTemplate:
-                "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$API_KEY",
+                "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=$apiKey",
             userAgentPackageName: "com.example.clinic_app",
           ),
 

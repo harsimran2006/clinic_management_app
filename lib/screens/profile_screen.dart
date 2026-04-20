@@ -22,6 +22,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final clinics = await DatabaseHelper.instance.getClinics();
     final appointments = await DatabaseHelper.instance.getAppointments();
 
+    if (!mounted) return;
+
     setState(() {
       totalClinics = clinics.length;
       totalAppointments = appointments.length;
@@ -35,39 +37,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: const Text("Profile"),
         backgroundColor: Colors.teal,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+
+      body: RefreshIndicator(
+        onRefresh: loadCounts,
+        child: ListView(
           children: [
-            const CircleAvatar(
-              radius: 50,
-              backgroundColor: Colors.teal,
-              child: Icon(
-                Icons.person,
-                size: 50,
-                color: Colors.white,
+            const SizedBox(height: 80),
+
+            const Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.teal,
+                child: Icon(Icons.person, size: 50, color: Colors.white),
               ),
             ),
 
             const SizedBox(height: 20),
 
-            const Text(
-              "User Name",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            const Center(
+              child: Text(
+                "User Name",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
             ),
 
             const SizedBox(height: 10),
 
-            const Text(
-              "user@email.com",
-              style: TextStyle(fontSize: 16, color: Colors.grey),
+            const Center(
+              child: Text(
+                "user@email.com",
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
             ),
 
             const SizedBox(height: 30),
 
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 30),
-              elevation: 3,
               child: ListTile(
                 leading: const Icon(Icons.local_hospital, color: Colors.teal),
                 title: const Text("Total Clinics"),
@@ -79,7 +85,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 30),
-              elevation: 3,
               child: ListTile(
                 leading: const Icon(Icons.calendar_today, color: Colors.teal),
                 title: const Text("Appointments"),

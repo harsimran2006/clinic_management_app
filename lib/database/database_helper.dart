@@ -41,7 +41,9 @@ class DatabaseHelper {
         name TEXT NOT NULL,
         address TEXT NOT NULL,
         phone TEXT NOT NULL UNIQUE,
-        description TEXT
+        description TEXT,
+        latitude TEXT,
+        longitude TEXT
       )
     ''');
 
@@ -74,7 +76,7 @@ class DatabaseHelper {
   }
 
   // USERS
-   //Register new user
+  //Register new user
   Future<int> registerUser(String username, String password) async {
     final db = await instance.database;
     return await db.insert('users', {
@@ -94,36 +96,39 @@ class DatabaseHelper {
     return result.isNotEmpty ? result.first : null;
   }
 
-  // CLINICS 
+  // CLINICS
   //Insert a new clinic
   Future<int> insertClinic(Map<String, dynamic> row) async {
     final db = await instance.database;
     return await db.insert('clinics', row);
   }
+
   //Get all clinics
   Future<List<Map<String, dynamic>>> getClinics() async {
     final db = await instance.database;
     return await db.query('clinics');
   }
 
-  // PATIENTS 
+  // PATIENTS
   //Insert a new patient
   Future<int> insertPatient(Map<String, dynamic> row) async {
     final db = await instance.database;
     return await db.insert('patients', row);
   }
+
   //get all patients
   Future<List<Map<String, dynamic>>> getPatients() async {
     final db = await instance.database;
     return await db.query('patients');
   }
 
-  // APPOINTMENTS 
+  // APPOINTMENTS
   //Insert a new appointment
   Future<int> insertAppointment(Map<String, dynamic> row) async {
     final db = await instance.database;
     return await db.insert('appointments', row);
   }
+
   //Get all appointments
   Future<List<Map<String, dynamic>>> getAppointments() async {
     final db = await instance.database;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddPatientScreen extends StatefulWidget {
   const AddPatientScreen({super.key});
@@ -15,43 +17,41 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   final age = TextEditingController();
   final phone = TextEditingController();
   final email = TextEditingController();
- //Save patient into database
- Future<void> savePatient() async {
-  if (!_formKey.currentState!.validate()) return;
+  XFile? pickedImage;
+  //Save patient into database
+  Future<void> savePatient() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  try {
-    await DatabaseHelper.instance.insertPatient({
-      'name': name.text.trim(),
-      'age': int.tryParse(age.text.trim()) ?? 0,
-      'phone': phone.text.trim(),
-      'email': email.text.trim(),
-      'clinic_id': null,
-    });
+    try {
+      await DatabaseHelper.instance.insertPatient({
+        'name': name.text.trim(),
+        'age': int.tryParse(age.text.trim()) ?? 0,
+        'phone': phone.text.trim(),
+        'email': email.text.trim(),
+        'clinic_id': null,
+      });
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Patient added successfully")),
-    );
-
-    Navigator.pop(context);
-
-  } catch (e) {
-    // Handle duplicate patient
-    if (e.toString().contains("UNIQUE constraint failed")) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Patient already exists"),
-        ),
+        const SnackBar(content: Text("Patient added successfully")),
       );
-    } else {
-      // Any other unexpected error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      // Handle duplicate patient
+      if (e.toString().contains("UNIQUE constraint failed")) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Patient already exists")));
+      } else {
+        // Any other unexpected error
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+      }
     }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +71,32 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
               _field(phone, "Phone", isPhone: true),
               _field(email, "Email", isEmail: true),
               const SizedBox(height: 20),
+
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                onPressed: () async {
+                  final picker = ImagePicker();
+                  final photo = await picker.pickImage(
+                    source: ImageSource.camera,
+                  );
+
+                  if (photo != null) {
+                    setState(() {
+                      pickedImage = photo;
+                    });
+                  }
+                },
+                child: const Text("Take Photo"),
+              ),
+
+              const SizedBox(height: 15),
+
+              pickedImage == null
+                  ? const Text("No photo selected")
+                  : Image.file(File(pickedImage!.path), height: 150),
+
+              const SizedBox(height: 25),
+
               ElevatedButton(
                 onPressed: savePatient,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
+import '../services/location_service.dart';
 
 class AddClinicScreen extends StatefulWidget {
   const AddClinicScreen({super.key});
@@ -9,50 +10,68 @@ class AddClinicScreen extends StatefulWidget {
 }
 
 class _AddClinicScreenState extends State<AddClinicScreen> {
-  //Controllers for clinic input
   final _formKey = GlobalKey<FormState>();
+
   final name = TextEditingController();
   final address = TextEditingController();
   final phone = TextEditingController();
   final description = TextEditingController();
+  final latitude = TextEditingController();
+  final longitude = TextEditingController();
 
- //Save clinic to the database
- Future<void> saveClinic() async {
-  if (!_formKey.currentState!.validate()) return;
+  Future<void> saveClinic() async {
+    if (!_formKey.currentState!.validate()) return;
 
-  try {
-    //Insert clinic into database
-    await DatabaseHelper.instance.insertClinic({
-      'name': name.text.trim(),
-      'address': address.text.trim(),
-      'phone': phone.text.trim(),
-      'description': description.text.trim(),
-    });
+    try {
+      await DatabaseHelper.instance.insertClinic({
+        'name': name.text.trim(),
+        'address': address.text.trim(),
+        'phone': phone.text.trim(),
+        'description': description.text.trim(),
+        'latitude': latitude.text.trim(),
+        'longitude': longitude.text.trim(),
+      });
 
-    if (!mounted) return;
-    //succes message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Clinic added successfully")),
-    );
+      if (!mounted) return;
 
-    Navigator.pop(context);
-
-  } catch (e) {
-    // Handle duplicate clinic
-    if (e.toString().contains("UNIQUE constraint failed")) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Clinic already exists"),
-        ),
+        const SnackBar(content: Text("Clinic added successfully")),
       );
-    } else {
-      // Any other unexpected error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      if (e.toString().contains("UNIQUE constraint failed")) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Clinic already exists")));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+      }
     }
   }
-}
+
+  Future<void> getLocation() async {
+    try {
+      var pos = await LocationService.determinePosition();
+
+      if (!mounted) return;
+
+      setState(() {
+        latitude.text = pos.latitude.toString();
+        longitude.text = pos.longitude.toString();
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +88,21 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
             children: [
               _field(name, "Clinic Name"),
               _field(address, "Address"),
-              _field(phone, "Phone"),
+              _field(phone, "Phone", isPhone: true),
               _field(description, "Description", maxLines: 3),
+
+              _field(latitude, "Latitude", readOnly: true),
+              _field(longitude, "Longitude", readOnly: true),
+
+              const SizedBox(height: 10),
+
+              ElevatedButton(
+                onPressed: getLocation,
+                child: const Text("Get Current Location"),
+              ),
+
               const SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: saveClinic,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
@@ -84,18 +115,47 @@ class _AddClinicScreenState extends State<AddClinicScreen> {
     );
   }
 
-  Widget _field(TextEditingController c, String label, {int maxLines = 1}) {
+  Widget _field(
+    TextEditingController c,
+    String label, {
+    int maxLines = 1,
+    bool readOnly = false,
+    bool isPhone = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
         controller: c,
         maxLines: maxLines,
+        readOnly: readOnly,
+        keyboardType: isPhone ? TextInputType.phone : TextInputType.text,
         decoration: InputDecoration(
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        validator: (v) => v!.isEmpty ? "Enter $label" : null,
+        validator: (v) {
+          if (v == null || v.trim().isEmpty) {
+            return "Enter $label";
+          }
+
+          if (isPhone && !RegExp(r'^[0-9]{10}$').hasMatch(v)) {
+            return "Enter valid 10-digit number";
+          }
+
+          return null;
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    address.dispose();
+    phone.dispose();
+    description.dispose();
+    latitude.dispose();
+    longitude.dispose();
+    super.dispose();
   }
 }
